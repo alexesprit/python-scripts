@@ -20,7 +20,7 @@ def find_git_repos(directory, search_mask):
     if '.git' in child_dirs:
         repo_type = get_repo_type(directory)
         if repo_type & search_mask:
-            print u'Found git repo at %s' % directory
+            print u'Found git repo at %s' % os.path.abspath(directory)
     else:
         for child_item in child_dirs:
             child_item_path = os.path.join(directory, child_item)
