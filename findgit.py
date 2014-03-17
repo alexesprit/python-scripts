@@ -3,22 +3,47 @@
 import os
 import sys
 
+import argparse
 
-def find_git_repos(folder):
+
+TYPE_LOCAL = 1 << 1
+TYPE_REMOTE = 1 << 2
+
+
+def get_repo_type(repo_path):
+    refs_path = os.path.join(repo_path, '.git', 'refs')
+    return TYPE_REMOTE if 'remotes' in os.listdir(refs_path) else TYPE_LOCAL
+
+
+def find_git_repos(folder, search_mask):
     child_folders = os.listdir(folder)
     if '.git' in child_folders:
-        print u'Found git repo at %s' % folder
+        repo_type = get_repo_type(folder)
+        if repo_type & search_mask:
+            print u'Found git repo at %s' % folder
     else:
         for child_item in child_folders:
             child_item_path = os.path.join(folder, child_item)
             if os.path.isdir(child_item_path):
-                find_git_repos(child_item_path)
+                find_git_repos(child_item_path, search_mask)
 
 
-def main(args):
-    search_folder = args[1]
-    find_git_repos(search_folder)
+def main():
+    parser = argparse.ArgumentParser(description='Search git repositories.')
+    parser.add_argument(dest='directory', metavar='DIR', help='Path to scanning')
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument('-l', '--local', action='store_true', help='Seach local repositories only')
+    group.add_argument('-r', '--remote', action='store_true', help='Search remote repositories only')
+
+    args = parser.parse_args()
+    if args.local:
+        search_mask = TYPE_LOCAL
+    elif args.remote:
+        search_mask = TYPE_REMOTE
+    else:
+        search_mask = TYPE_LOCAL | TYPE_REMOTE
+    find_git_repos(args.directory, search_mask)
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    sys.exit(main())
