@@ -42,7 +42,10 @@ def main():
         search_mask = TYPE_REMOTE
     else:
         search_mask = TYPE_LOCAL | TYPE_REMOTE
-    find_git_repos(args.directory, search_mask)
+    try:
+        find_git_repos(args.directory, search_mask)
+    except KeyboardInterrupt:
+        print 'Cancelled'
 
 
 if __name__ == '__main__':
