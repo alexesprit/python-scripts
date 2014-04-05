@@ -16,16 +16,16 @@ def get_repo_type(repo_directory):
 
 
 def find_git_repos(directory, search_mask):
-    child_dirs = os.listdir(directory)
-    if '.git' in child_dirs:
-        repo_type = get_repo_type(directory)
-        if repo_type & search_mask:
-            print u'Found git repo at %s' % os.path.abspath(directory)
-    else:
-        for child_item in child_dirs:
-            child_item_path = os.path.join(directory, child_item)
-            if os.path.isdir(child_item_path):
-                find_git_repos(child_item_path, search_mask)
+    for root, dirs, files in os.walk(directory):
+        if '.git' in dirs:
+            repo_type = get_repo_type(root)
+            if repo_type & search_mask:
+                print u'Found git repo at %s' % os.path.abspath(root)
+            dirs.remove('.git')
+        # don't cd to dir if it's hidden
+        for dir_ in dirs:
+            if dir_.startswith('.'):
+                dirs.remove(dir_)
 
 
 def main():
