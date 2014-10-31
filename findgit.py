@@ -15,17 +15,16 @@ def get_repo_type(repo_directory):
     return TYPE_REMOTE if 'remotes' in os.listdir(refs_path) else TYPE_LOCAL
 
 
-def find_git_repos(directory, search_mask):
-    for root, dirs, files in os.walk(directory):
-        if '.git' in dirs:
-            repo_type = get_repo_type(root)
-            if repo_type & search_mask:
-                print u'Found git repo at %s' % os.path.abspath(root)
-            dirs.remove('.git')
-        # don't cd to dir if it's hidden
-        for dir_ in dirs:
-            if dir_.startswith('.'):
-                dirs.remove(dir_)
+def find_git_repos(root, search_mask):
+    dirs = [x for x in os.listdir(root) 
+              if os.path.isdir(os.path.join(root, x))]
+    if '.git' in dirs:
+        repo_type = get_repo_type(root)
+        if repo_type & search_mask:
+            print u'Found git repo at %s' % os.path.abspath(root)
+    else:
+        for d in dirs:
+            find_git_repos(os.path.join(root, d), search_mask)
 
 
 def main():
