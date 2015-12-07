@@ -55,8 +55,11 @@ def get_repo_type(repo_path):
 
 
 def find_git_repos(root, search_mask):
-    dirs = [x for x in os.listdir(root)
-              if os.path.isdir(os.path.join(root, x))]
+    try:
+        dirs = [x for x in os.listdir(root)
+                  if os.path.isdir(os.path.join(root, x))]
+    except WindowsError:
+        return
     if '.git' in dirs:
         process_repo(root, search_mask)
     else:
