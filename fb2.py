@@ -52,30 +52,39 @@ def get_tag_value(xmldoc, tagname):
     return None
 
 
+def rename_book(fn):
+    try:
+        xmldoc = minidom.parse(fn)
+        book_title = get_tag_value(xmldoc, 'book-title')
+        first_name = get_tag_value(xmldoc, 'first-name')
+        last_name = get_tag_value(xmldoc, 'last-name')
+    except ExpatError:
+        print(fn)
+        return
+
+    author_name = ' '.join(
+        ifilter(None, (first_name, last_name))
+    )
+    new_fn = u'{0} - {1}.fb2'.format(author_name, book_title)
+    try:
+        os.rename(fn, normalize_path(new_fn))
+    except WindowsError:
+        print(fn)
+
+
 def rename_books(directory):
     for fn in gen_book_files(directory):
-        try:
-            xmldoc = minidom.parse(fn)
-            book_title = get_tag_value(xmldoc, 'book-title')
-            first_name = get_tag_value(xmldoc, 'first-name')
-            last_name = get_tag_value(xmldoc, 'last-name')
-        except ExpatError:
-            print(fn)
-            continue
-
-        author_name = ' '.join(
-            ifilter(None, (first_name, last_name))
-        )
-        new_fn = u'{0} - {1}.fb2'.format(author_name, book_title)
-        try:
-            os.rename(fn, normalize_path(new_fn))
-        except WindowsError:
-            print(new_fn)
-            print(fn)
+        rename_book(fn)
 
 
 def main(args):
-    rename_books('.')
+    path = ''.join(args[1:])
+    if os.path.isfile(path):
+        rename_book(path)
+    elif os.path.isdir(path):
+        rename_books(path)
+    else:
+        print(u'Unknown file or directory')
     return 0
 
 
