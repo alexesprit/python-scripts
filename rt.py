@@ -88,11 +88,12 @@ def main(args):
     path = ''.join(args[1:])
     if os.path.isfile(path):
         rename_file(path)
-    else:
+    elif os.path.isdir(path):
         rename_files_in_dir(path)
+    else:
+        print(u'Unknown file or directory')
     return 0
 
 
 if '__main__' == __name__:
     sys.exit(main(sys.argv))
-
