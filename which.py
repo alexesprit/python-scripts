@@ -1,6 +1,8 @@
 import os
 import sys
 
+from argparse import ArgumentParser
+
 
 CUSTOM_PATHEXT = ('.py', '.lua', '.rb')
 
@@ -9,41 +11,61 @@ def is_executable(fpath):
     return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
 
-def which(program):
+def which(program, show_all):
     fpath, fname = os.path.split(program)
     if fpath:
-        if is_exe(program):
-            return program
+        if is_executable(program):
+            return [program]
     else:
         extension = os.path.splitext(program)[1]
         pathext = os.environ['PathExt'].lower().split(os.pathsep)
         pathext.extend(CUSTOM_PATHEXT)
 
+        exe_files = []
+
         for path in os.environ['PATH'].split(os.pathsep):
-            exe_files = []
+            exe_file = os.path.join(path, program)
             if not extension:
                 for ext in pathext:
-                    exe_file = os.path.join(path, '{0}{1}'.format(program, ext))
-                    exe_files.append(exe_file)
+                    exe_path = '{0}{1}'.format(exe_file, ext)
+                    if is_executable(exe_path):
+                        if not show_all:
+                            return [exe_path]
+                        exe_files.append(exe_path)
             else:
-                exe_files = [os.path.join(path, program)]
+                exe_path = exe_file
+                if is_executable(exe_path):
+                    return [exe_file]
+        return exe_files
 
-            for exe_file in exe_files:
-                if is_executable(exe_file):
-                    return exe_file
-
-    return None
+    return []
 
 
-def main(args):
-    program = ''.join(args[1:])
-    program_path = which(program)
-    if program_path:
-        print(program_path)
+def create_arg_parser():
+    parser = ArgumentParser(
+        description='Write the full path of PROGRAM(s) to standard output.')
+    parser.add_argument(dest='program', help='Program to search')
+    parser.add_argument('-a', '--all', default=False, action='store_true',
+                        help='Print all matches in PATH, not just the first')
+    return parser
+
+
+def parse_args(arg_parser):
+    args = arg_parser.parse_args()
+
+    programs = which(args.program, args.all)
+    if programs:
+        for program_path in programs:
+            print(program_path)
     else:
-        print('{0}: not found'.format(program))
+        print('{0}: not found'.format(args.program))
     return 0
 
 
+def main():
+    arg_parser = create_arg_parser()
+    return parse_args(arg_parser)
+
+
 if '__main__' == __name__:
-    sys.exit(main(sys.argv))
+    sys.exit(main())
