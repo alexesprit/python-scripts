@@ -2,9 +2,6 @@ import os
 import sys
 
 
-EXECUTABLES = ('.exe', '.bat', '.cmd')
-
-
 def is_executable(fpath):
     return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
@@ -15,12 +12,14 @@ def which(program):
         if is_exe(program):
             return program
     else:
+        extension = os.path.splitext(program)[1]
+        pathext = os.environ['PathExt'].lower().split(os.pathsep)
+
         for path in os.environ['PATH'].split(os.pathsep):
             exe_files = []
-            extension = os.path.splitext(program)[1]
             if not extension:
-                for extension in EXECUTABLES:
-                    exe_file = os.path.join(path, '{0}{1}'.format(program, extension))
+                for ext in pathext:
+                    exe_file = os.path.join(path, '{0}{1}'.format(program, ext))
                     exe_files.append(exe_file)
             else:
                 exe_files = [os.path.join(path, program)]
