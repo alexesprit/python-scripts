@@ -44,7 +44,7 @@ def which(program, show_all):
 def create_arg_parser():
     parser = ArgumentParser(
         description='Write the full path of PROGRAM(s) to standard output.')
-    parser.add_argument(dest='program', help='Program to search')
+    parser.add_argument(dest='program', nargs='+', help='Programs to search')
     parser.add_argument('-a', '--all', default=False, action='store_true',
                         help='Print all matches in PATH, not just the first')
     return parser
@@ -53,12 +53,13 @@ def create_arg_parser():
 def parse_args(arg_parser):
     args = arg_parser.parse_args()
 
-    programs = which(args.program, args.all)
-    if programs:
-        for program_path in programs:
-            print(program_path)
-    else:
-        print('{0}: not found'.format(args.program))
+    for program in args.program:
+        programs = which(program, args.all)
+        if programs:
+            for program_path in programs:
+                print(program_path)
+        else:
+            print('{0}: not found'.format(program))
     return 0
 
 
