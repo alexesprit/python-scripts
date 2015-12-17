@@ -2,6 +2,9 @@ import os
 import sys
 
 
+CUSTOM_PATHEXT = ('.py', '.lua', '.rb')
+
+
 def is_executable(fpath):
     return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
@@ -14,6 +17,7 @@ def which(program):
     else:
         extension = os.path.splitext(program)[1]
         pathext = os.environ['PathExt'].lower().split(os.pathsep)
+        pathext.extend(CUSTOM_PATHEXT)
 
         for path in os.environ['PATH'].split(os.pathsep):
             exe_files = []
