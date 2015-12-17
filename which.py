@@ -43,6 +43,7 @@ def which(program, show_all):
 
 def create_arg_parser():
     parser = ArgumentParser(
+        prog='which',
         description='Write the full path of PROGRAM(s) to standard output.')
     parser.add_argument(dest='program', nargs='+', help='Programs to search')
     parser.add_argument('-a', '--all', default=False, action='store_true',
