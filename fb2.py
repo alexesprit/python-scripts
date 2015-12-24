@@ -60,7 +60,7 @@ def rename_book(path):
         last_name = get_tag_value(xmldoc, 'last-name')
     except ExpatError:
         print(path)
-        return
+        return False
 
     author_name = ' '.join(
         ifilter(None, (first_name, last_name))
@@ -68,15 +68,30 @@ def rename_book(path):
     new_fn = u'{0} - {1}.fb2'.format(author_name, book_title)
     new_fn = normalize_path(new_fn)
     new_path = os.path.join(os.path.dirname(path), new_fn)
-    try:
-        os.rename(path, new_path)
-    except WindowsError:
-        print(fn)
+
+    if new_path != path:
+        try:
+            os.rename(path, new_path)
+            return True
+        except WindowsError:
+            print(fn)
+
+    return False
 
 
 def rename_books(directory):
-    for fn in gen_book_files(directory):
-        rename_book(fn)
+    files = gen_book_files(directory)
+    if files:
+        counter = 0
+        for f in files:
+            if rename_book(f):
+                counter += 1
+        if counter:
+            print('Renamed {0} files'.format(counter))
+        else:
+            print('No files are renamed')
+    else:
+        print('No books in {0}'.format(os.path.abspath(path)))
 
 
 def main(args):
@@ -86,7 +101,7 @@ def main(args):
     elif os.path.isdir(path):
         rename_books(path)
     else:
-        print(u'Unknown file or directory')
+        print('Unknown file or directory')
     return 0
 
 
