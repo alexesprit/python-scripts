@@ -52,22 +52,24 @@ def get_tag_value(xmldoc, tagname):
     return None
 
 
-def rename_book(fn):
+def rename_book(path):
     try:
-        xmldoc = minidom.parse(fn)
+        xmldoc = minidom.parse(path)
         book_title = get_tag_value(xmldoc, 'book-title')
         first_name = get_tag_value(xmldoc, 'first-name')
         last_name = get_tag_value(xmldoc, 'last-name')
     except ExpatError:
-        print(fn)
+        print(path)
         return
 
     author_name = ' '.join(
         ifilter(None, (first_name, last_name))
     )
     new_fn = u'{0} - {1}.fb2'.format(author_name, book_title)
+    new_fn = normalize_path(new_fn)
+    new_path = os.path.join(os.path.dirname(path), new_fn)
     try:
-        os.rename(fn, normalize_path(new_fn))
+        os.rename(path, new_path)
     except WindowsError:
         print(fn)
 
