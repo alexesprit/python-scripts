@@ -79,7 +79,8 @@ def find_git_repos(root, search_mask):
 
 
 def main():
-    parser = ArgumentParser(description=DESCRIPTION,
+    parser = ArgumentParser(prog='findgit',
+                            description=DESCRIPTION,
                             formatter_class=RawTextHelpFormatter)
     parser.add_argument(dest='directory', metavar='DIR', help='Path to scanning')
     group = parser.add_mutually_exclusive_group(required=False)
