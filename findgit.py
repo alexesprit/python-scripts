@@ -3,7 +3,18 @@
 import os
 import sys
 
-import argparse
+from argparse import ArgumentParser
+from argparse import RawTextHelpFormatter
+
+
+DESCRIPTION = '''Search git repositories.
+
+legend:
+  L - local
+  = - remote (up-to-date)
+  ^ - remote (outdated)
+  ? - unknown
+'''
 
 
 TYPE_LOCAL = 1 << 1
@@ -68,7 +79,8 @@ def find_git_repos(root, search_mask):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Search git repositories.')
+    parser = ArgumentParser(description=DESCRIPTION,
+                            formatter_class=RawTextHelpFormatter)
     parser.add_argument(dest='directory', metavar='DIR', help='Path to scanning')
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument('-l', '--local', action='store_true', help='Search local repositories only')
