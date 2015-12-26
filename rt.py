@@ -77,11 +77,11 @@ def rename_files_in_dir(path):
             if rename_file(f):
                 counter += 1
         if counter:
-            print 'Renamed %d files' % counter
+            print('Renamed {0} files'.format(counter))
         else:
-            print 'No files are renamed'
+            print('No files are renamed')
     else:
-        print 'No torrent files in %s' % os.path.abspath(path)
+        print('No torrent files in {0}'.format(os.path.abspath(path)))
 
 
 def main(args):

@@ -49,7 +49,7 @@ def process_repo(repo_directory, search_mask):
         else:
             status = '?'
 
-        print u'[{2}] {0} [{1}]'.format(repo_name, repo_path, status)
+        print('[{2}] {0} [{1}]'.format(repo_name, repo_path, status))
 
 
 def get_repo_type(repo_path):
@@ -100,7 +100,7 @@ def main():
     try:
         find_git_repos(args.directory, search_mask)
     except KeyboardInterrupt:
-        print 'Cancelled'
+        print('Cancelled')
 
 
 if __name__ == '__main__':

@@ -3,7 +3,6 @@
 import os
 import sys
 
-from itertools import ifilter
 from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
@@ -63,7 +62,7 @@ def rename_book(path):
         return False
 
     author_name = ' '.join(
-        ifilter(None, (first_name, last_name))
+        filter(None, (first_name, last_name))
     )
     new_fn = u'{0} - {1}.fb2'.format(author_name, book_title)
     new_fn = normalize_path(new_fn)
