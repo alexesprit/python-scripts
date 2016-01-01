@@ -73,6 +73,8 @@ def find_git_repos(root, search_mask):
         return
     if '.git' in dirs:
         process_repo(root, search_mask)
+    elif '.svn' in dirs:
+        pass
     else:
         for d in dirs:
             find_git_repos(os.path.join(root, d), search_mask)
