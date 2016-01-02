@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from __future__ import unicode_literals
+
 import os
 import sys
 
@@ -8,22 +10,7 @@ from xml.parsers.expat import ExpatError
 
 
 def normalize_path(fpath):
-    return ''.join(char for char in fpath if char not in "\/:*?<>|\"")
-
-
-def decode_path(function):
-    def wrapper2x(*args, **kwargs):
-        for item in function(*args, **kwargs):
-            yield item.decode(sys.getfilesystemencoding())
-
-    def wrapper3x(*args, **kwargs):
-        for item in function(*args, **kwargs):
-            yield item
-
-    if sys.version_info > (3, ):
-        return wrapper3x
-    else:
-        return wrapper2x
+    return ''.join(char for char in fpath if char not in '\\/:*?<>|"')
 
 
 def is_book(filename):
@@ -31,7 +18,6 @@ def is_book(filename):
     return extension == '.fb2'
 
 
-@decode_path
 def gen_book_files(directory):
     for root, dirs, files in os.walk(directory):
         for fn in files:
@@ -64,7 +50,7 @@ def rename_book(path):
     author_name = ' '.join(
         filter(None, (first_name, last_name))
     )
-    new_fn = u'{0} - {1}.fb2'.format(author_name, book_title)
+    new_fn = '{0} - {1}.fb2'.format(author_name, book_title)
     new_fn = normalize_path(new_fn)
     new_path = os.path.join(os.path.dirname(path), new_fn)
 
