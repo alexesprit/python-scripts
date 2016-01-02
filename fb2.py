@@ -65,18 +65,14 @@ def rename_book(path):
 
 
 def rename_books(directory):
-    files = gen_book_files(directory)
-    if files:
-        counter = 0
-        for f in files:
-            if rename_book(f):
-                counter += 1
-        if counter:
-            print('Renamed {0} files'.format(counter))
-        else:
-            print('No files are renamed')
+    counter = 0
+    for f in gen_book_files(directory):
+        if rename_book(f):
+            counter += 1
+    if counter:
+        print('Renamed {0} files'.format(counter))
     else:
-        print('No books in {0}'.format(os.path.abspath(directory)))
+        print('No files are renamed')
 
 
 def main(args):
