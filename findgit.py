@@ -22,6 +22,11 @@ TYPE_REMOTE = 1 << 2
 TYPE_OUTDATED = 1 << 3
 
 
+EXCLUDE_DIRECTORIES = (
+    'bin', 'build', 'dist', 'node_modules', 'obj',
+)
+
+
 def get_git_path(repo_path, *args):
     return os.path.join(repo_path, '.git', *args)
 
@@ -75,9 +80,11 @@ def find_git_repos(root, search_mask):
     if '.git' in dirs:
         process_repo(root, search_mask)
     elif '.svn' in dirs:
-        pass
+        return
     else:
         for d in dirs:
+            if d in EXCLUDE_DIRECTORIES:
+                continue
             if d.startswith('.'):
                 continue
             find_git_repos(os.path.join(root, d), search_mask)
