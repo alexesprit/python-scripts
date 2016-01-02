@@ -59,7 +59,7 @@ def rename_book(path):
             os.rename(path, new_path)
             return True
         except WindowsError:
-            print(fn)
+            print(path)
 
     return False
 
@@ -76,7 +76,7 @@ def rename_books(directory):
         else:
             print('No files are renamed')
     else:
-        print('No books in {0}'.format(os.path.abspath(path)))
+        print('No books in {0}'.format(os.path.abspath(directory)))
 
 
 def main(args):
