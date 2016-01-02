@@ -54,7 +54,8 @@ def process_repo(repo_directory, search_mask):
 
 def get_repo_type(repo_path):
     head = get_git_object(repo_path, 'refs', 'heads', 'master')
-    orig_head = get_git_object(repo_path, 'refs', 'remotes', 'origin', 'master')
+    orig_head = get_git_object(repo_path,
+                               'refs', 'remotes', 'origin', 'master')
 
     if not orig_head:
         return TYPE_LOCAL
@@ -68,7 +69,7 @@ def get_repo_type(repo_path):
 def find_git_repos(root, search_mask):
     try:
         dirs = [x for x in os.listdir(root)
-                  if os.path.isdir(os.path.join(root, x))]
+                if os.path.isdir(os.path.join(root, x))]
     except WindowsError:
         return
     if '.git' in dirs:
@@ -84,11 +85,15 @@ def main():
     parser = ArgumentParser(prog='findgit',
                             description=DESCRIPTION,
                             formatter_class=RawTextHelpFormatter)
-    parser.add_argument(dest='directory', metavar='DIR', help='Path to scanning')
+    parser.add_argument(dest='directory', metavar='DIR',
+                        help='Path to scanning')
     group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument('-l', '--local', action='store_true', help='Search local repositories only')
-    group.add_argument('-r', '--remote', action='store_true', help='Search remote repositories only')
-    group.add_argument('-o', '--outdated', action='store_true', help='Search outdated repositories only')
+    group.add_argument('-l', '--local', action='store_true',
+                       help='Search local repositories only')
+    group.add_argument('-r', '--remote', action='store_true',
+                       help='Search remote repositories only')
+    group.add_argument('-o', '--outdated', action='store_true',
+                       help='Search outdated repositories only')
 
     args = parser.parse_args()
     if args.local:
