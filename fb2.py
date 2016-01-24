@@ -1,16 +1,19 @@
 # coding: utf-8
 
-from __future__ import unicode_literals
-
 import os
 import sys
 
+from argparse import ArgumentParser
 from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
 
+BOOK_AUTHOR = 1
+BOOK_TITLE = 2
+
+
 def normalize_path(fpath):
-    return ''.join(char for char in fpath if char not in '\\/:*?<>|"')
+    return ''.join(char for char in fpath if char not in "\/:*?<>|\"")
 
 
 def is_book(filename):
@@ -37,54 +40,86 @@ def get_tag_value(xmldoc, tagname):
     return None
 
 
-def rename_book(path):
+def get_book_info(book_filename):
     try:
-        xmldoc = minidom.parse(path)
+        xmldoc = minidom.parse(book_filename)
+
+        author_tag = xmldoc.getElementsByTagName('author')[0]
+        f_name = get_tag_value(author_tag, 'first-name')
+        m_name = get_tag_value(author_tag, 'middle-name')
+        l_name = get_tag_value(author_tag, 'last-name')
+
+        book_author = ' '.join((
+            i.strip() for i in (f_name, m_name, l_name) if i))
         book_title = get_tag_value(xmldoc, 'book-title')
-        first_name = get_tag_value(xmldoc, 'first-name')
-        last_name = get_tag_value(xmldoc, 'last-name')
+
+        return {
+            BOOK_AUTHOR: book_author,
+            BOOK_TITLE: book_title,
+        }
     except ExpatError:
-        print(path)
+        return None
+
+
+def get_book_filename(book_filename, short=False):
+    book_info = get_book_info(book_filename)
+    if not book_info:
         return False
 
-    author_name = ' '.join(
-        filter(None, (first_name, last_name))
-    )
-    new_fn = '{0} - {1}.fb2'.format(author_name, book_title)
-    new_fn = normalize_path(new_fn)
-    new_path = os.path.join(os.path.dirname(path), new_fn)
-
-    if new_path != path:
-        try:
-            os.rename(path, new_path)
-            return True
-        except WindowsError:
-            print(path)
-
-    return False
-
-
-def rename_books(directory):
-    counter = 0
-    for f in gen_book_files(directory):
-        if rename_book(f):
-            counter += 1
-    if counter:
-        print('Renamed {0} files'.format(counter))
+    book_title = book_info[BOOK_TITLE]
+    if short:
+        new_filename = book_title
     else:
-        print('No files are renamed')
+        book_author = book_info[BOOK_AUTHOR]
+        new_filename = '{0} - {1}'.format(book_author, book_title)
+
+    new_filename = normalize_path(new_filename)
+    file_extension = os.path.splitext(book_filename)[1]
+    return '{0}{1}'.format(new_filename, file_extension)
 
 
-def main(args):
-    path = ''.join(args[1:])
-    if os.path.isfile(path):
-        rename_book(path)
-    elif os.path.isdir(path):
-        rename_books(path)
+def rename_book(book_filename, short=False):
+    new_filename = get_book_filename(book_filename, short)
+    if new_filename != book_filename:
+        os.rename(book_filename, new_filename)
+    return True
+
+
+def create_arg_parser():
+    parser = ArgumentParser(
+        prog='fb2',
+        description='Rename book filenames.')
+    parser.add_argument(dest='book', help='Book filename or directory with books')
+    parser.add_argument('-s', '--short', default=False, action='store_true',
+                        help='Use book title only as filename')
+    return parser
+
+
+def parse_args(arg_parser):
+    args = arg_parser.parse_args()
+
+    if os.path.isfile(args.book):
+        if rename_book(args.book, args.short):
+            print('Renamed: {0}'.format(args.book))
+        else:
+            print('Cannot rename {0}'.format(args.book))
+        return 0
+    elif os.path.isdir(args.book):
+        for book_filename in gen_book_files(args.book):
+            if rename_book(book_filename, args.short):
+                print('Renamed: {0}'.format(book_filename))
+            else:
+                print('Cannot rename {0}'.format(book_filename))
+        return 0
     else:
-        print('Unknown file or directory')
-    return 0
+        arg_parser.error('{0} does not exist'.format(args.book))
+        return 2
+
+
+def main():
+    arg_parser = create_arg_parser()
+    return parse_args(arg_parser)
 
 
 if '__main__' == __name__:
-    sys.exit(main(sys.argv))
+    sys.exit(main())
