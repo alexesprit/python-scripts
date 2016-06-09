@@ -20,6 +20,7 @@ def which(program, show_all):
         extension = os.path.splitext(program)[1]
         pathext = os.environ['PathExt'].lower().split(os.pathsep)
         pathext.extend(CUSTOM_PATHEXT)
+        pathext = set(pathext)
 
         exe_files = []
 
