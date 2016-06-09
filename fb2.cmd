@@ -1,2 +1,2 @@
 @echo off
-"%~dp0\fb2.py" %*
+"%~dp0\%~n0.py" %*

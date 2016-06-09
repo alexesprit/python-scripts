@@ -1,2 +1,2 @@
 @echo off
-"%~dp0\which.py" %*
+"%~dp0\%~n0.py" %*

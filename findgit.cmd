@@ -1,2 +1,2 @@
 @echo off
-"%~dp0\findgit.py" %*
+"%~dp0\%~n0.py" %*
