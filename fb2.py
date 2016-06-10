@@ -89,7 +89,8 @@ def create_arg_parser():
     parser = ArgumentParser(
         prog='fb2',
         description='Rename book filenames.')
-    parser.add_argument(dest='book', help='Book filename or directory with books')
+    parser.add_argument(dest='book',
+                        help='Book filename or directory with books')
     parser.add_argument('-s', '--short', default=False, action='store_true',
                         help='Use book title only as filename')
     return parser

@@ -1,9 +1,8 @@
 # https://wiki.theory.org/Decoding_bencoded_data_with_python
 import glob
 import os
-
-import sys
 import re
+import sys
 
 
 decimal_match = re.compile('\d')
