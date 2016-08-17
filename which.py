@@ -13,30 +13,27 @@ def is_executable(fpath):
 
 def which(program, show_all):
     fpath, fname = os.path.split(program)
-    if fpath:
-        if is_executable(program):
-            return [program]
+    if fpath and is_executable(program):
+        return [program]
     else:
-        extension = os.path.splitext(program)[1]
-        pathext = os.environ['PathExt'].lower().split(os.pathsep)
-        pathext.extend(CUSTOM_PATHEXT)
-        pathext = set(pathext)
+        name, ext = os.path.splitext(program)
+        if not ext:
+            pathext = os.environ['PathExt'].lower().split(os.pathsep)
+            pathext.extend(CUSTOM_PATHEXT)
+            pathext = set(pathext)
+        else:
+            pathext = [ext]
 
         exe_files = []
 
         for path in os.environ['PATH'].split(os.pathsep):
-            exe_file = os.path.join(path, program)
-            if not extension:
-                for ext in pathext:
-                    exe_path = '{0}{1}'.format(exe_file, ext)
-                    if is_executable(exe_path):
-                        if not show_all:
-                            return [exe_path]
-                        exe_files.append(exe_path)
-            else:
-                exe_path = exe_file
+            exe_file = os.path.join(path, name)
+            for ext in pathext:
+                exe_path = '{0}{1}'.format(exe_file, ext)
                 if is_executable(exe_path):
-                    return [exe_file]
+                    if not show_all:
+                        return [exe_path]
+                    exe_files.append(exe_path)
         return exe_files
 
     return []
