@@ -64,11 +64,11 @@ def get_repo_type(repo_path):
 
     if not orig_head:
         return TYPE_LOCAL
-    else:
-        if head == orig_head:
-            return TYPE_REMOTE
-        else:
-            return TYPE_REMOTE | TYPE_OUTDATED
+
+    if head == orig_head:
+        return TYPE_REMOTE
+
+    return TYPE_REMOTE | TYPE_OUTDATED
 
 
 def find_git_repos(root, search_mask):
