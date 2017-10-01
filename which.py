@@ -1,8 +1,6 @@
 import os
 import sys
-
 from argparse import ArgumentParser
-
 
 CUSTOM_PATHEXT = ('.py', '.lua', '.rb')
 
@@ -12,7 +10,7 @@ def is_executable(fpath):
 
 
 def which(program, show_all):
-    fpath, fname = os.path.split(program)
+    fpath, _ = os.path.split(program)
     if fpath and is_executable(program):
         return [program]
     else:
@@ -67,5 +65,5 @@ def main():
     return parse_args(arg_parser)
 
 
-if '__main__' == __name__:
+if __name__ == '__main__':
     sys.exit(main())
