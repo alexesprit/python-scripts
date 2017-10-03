@@ -2,10 +2,7 @@
 
 import os
 import sys
-
-from argparse import ArgumentParser
-from argparse import RawTextHelpFormatter
-
+from argparse import ArgumentParser, RawTextHelpFormatter
 
 DESCRIPTION = '''Search git repositories.
 
@@ -16,11 +13,9 @@ legend:
   ? - unknown
 '''
 
-
 TYPE_LOCAL = 1 << 1
 TYPE_REMOTE = 1 << 2
 TYPE_OUTDATED = 1 << 3
-
 
 EXCLUDE_DIRECTORIES = (
     'bin', 'build', 'dist', 'node_modules', 'obj',
