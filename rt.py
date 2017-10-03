@@ -1,11 +1,13 @@
+# coding: utf-8
+
 # https://wiki.theory.org/Decoding_bencoded_data_with_python
+
 import glob
 import os
 import re
 import sys
 
-
-decimal_match = re.compile('\d')
+decimal_match = re.compile(r'\d')
 
 
 def bdecode(data):
@@ -20,21 +22,21 @@ def _dechunk(chunks):
 
     if item == 'd':
         item = chunks.pop()
-        hash = {}
+        hash_data = {}
         while item != 'e':
             chunks.append(item)
             key = _dechunk(chunks)
-            hash[key] = _dechunk(chunks)
+            hash_data[key] = _dechunk(chunks)
             item = chunks.pop()
-        return hash
+        return hash_data
     elif item == 'l':
         item = chunks.pop()
-        list = []
+        arr = []
         while item != 'e':
             chunks.append(item)
-            list.append(_dechunk(chunks))
+            arr.append(_dechunk(chunks))
             item = chunks.pop()
-        return list
+        return arr
     elif item == 'i':
         item = chunks.pop()
         num = ''
@@ -48,7 +50,7 @@ def _dechunk(chunks):
             num += item
             item = chunks.pop()
         line = ''
-        for i in range(int(num)):
+        for _ in range(int(num)):
             line += chunks.pop()
         return line
     raise IOError("Invalid input")
@@ -64,8 +66,7 @@ def rename_file(path):
     if path != new_path:
         os.rename(path, new_path)
         return True
-    else:
-        return False
+    return False
 
 
 def rename_files_in_dir(path):
@@ -94,5 +95,5 @@ def main(args):
     return 0
 
 
-if '__main__' == __name__:
+if __name__ == '__main__':
     sys.exit(main(sys.argv))
