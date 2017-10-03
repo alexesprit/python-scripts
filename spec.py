@@ -15,7 +15,11 @@ def rename_file(path, dry_run=False):
     new_file_path = os.path.join(dir_name, new_file_name)
 
     if not dry_run:
-        os.rename(path, new_file_path)
+        try:
+            os.rename(path, new_file_path)
+        except OSError:
+            print('Unable to rename {0}'.format(base_name))
+            return
     print('Renamed {0} to {1}'.format(base_name, new_file_name))
 
 
