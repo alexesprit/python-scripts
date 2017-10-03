@@ -2,18 +2,16 @@
 
 import os
 import sys
-
 from argparse import ArgumentParser
 from xml.dom import minidom
 from xml.parsers.expat import ExpatError
-
 
 BOOK_AUTHOR = 1
 BOOK_TITLE = 2
 
 
 def normalize_path(fpath):
-    return ''.join(char for char in fpath if char not in "\/:*?<>|\"")
+    return ''.join(char for char in fpath if char not in r"\/:*?<>|\"")
 
 
 def is_book(filename):
@@ -22,7 +20,7 @@ def is_book(filename):
 
 
 def gen_book_files(directory):
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         for fn in files:
             if is_book(fn):
                 yield os.path.join(root, fn)
@@ -122,5 +120,5 @@ def main():
     return parse_args(arg_parser)
 
 
-if '__main__' == __name__:
+if __name__ == '__main__':
     sys.exit(main())
