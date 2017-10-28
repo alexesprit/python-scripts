@@ -62,7 +62,7 @@ def get_book_info(book_filename):
 def get_book_filename(book_filename, short=False):
     book_info = get_book_info(book_filename)
     if not book_info:
-        return False
+        return None
 
     book_title = book_info[BOOK_TITLE]
     if short:
@@ -78,6 +78,9 @@ def get_book_filename(book_filename, short=False):
 
 def rename_book(book_filename, short=False):
     new_filename = get_book_filename(book_filename, short)
+    if not new_filename:
+        return False
+
     if new_filename != book_filename:
         os.rename(book_filename, new_filename)
     return True
