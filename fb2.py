@@ -8,6 +8,7 @@ from xml.parsers.expat import ExpatError
 
 BOOK_AUTHOR = 1
 BOOK_TITLE = 2
+NICKNAME = 3
 
 
 def normalize_path(fpath):
@@ -47,6 +48,8 @@ def get_book_info(book_filename):
         m_name = get_tag_value(author_tag, 'middle-name')
         l_name = get_tag_value(author_tag, 'last-name')
 
+        nickname = get_tag_value(author_tag, 'nickname')
+
         book_author = ' '.join((
             i.strip() for i in (f_name, m_name, l_name) if i))
         book_title = get_tag_value(xmldoc, 'book-title')
@@ -54,6 +57,7 @@ def get_book_info(book_filename):
         return {
             BOOK_AUTHOR: book_author,
             BOOK_TITLE: book_title,
+            NICKNAME: nickname,
         }
     except ExpatError:
         return None
@@ -68,7 +72,7 @@ def get_book_filename(book_filename, short=False):
     if short:
         new_filename = book_title
     else:
-        book_author = book_info[BOOK_AUTHOR]
+        book_author = book_info[NICKNAME] or book_info[BOOK_AUTHOR]
         new_filename = '{0} - {1}'.format(book_author, book_title)
 
     new_filename = normalize_path(new_filename)
