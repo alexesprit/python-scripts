@@ -23,7 +23,7 @@ def make_dir_for_assembly(path, dry_run=False):
     if not os.path.isdir(assembly_path):
         if not dry_run:
             os.mkdir(assembly_path)
-        print('Made directory for {assembly_name}')
+        print(f'Made directory for {assembly_name}')
     else:
         print(f'Skip directory for {assembly_name}, already exists')
 
