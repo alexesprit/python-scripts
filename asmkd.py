@@ -4,15 +4,18 @@ import os
 import sys
 from argparse import ArgumentParser
 
+
 def remove_spec_suffix(name):
     # todo smart skip
     return name[0:-3]
+
 
 def get_assembly(path):
     base_name = os.path.basename(path)
     file_name, _ = os.path.splitext(base_name)
 
     return remove_spec_suffix(file_name)
+
 
 def make_dir_for_assembly(path, dry_run=False):
     file_dir = os.path.dirname(path)
@@ -27,9 +30,11 @@ def make_dir_for_assembly(path, dry_run=False):
     else:
         print(f'Skip directory for {assembly_name}, already exists')
 
+
 def is_spec_file(file_name):
     file_name = os.path.splitext(file_name)[0]
     return file_name.endswith(' СП')
+
 
 def create_arg_parser():
     parser = ArgumentParser(

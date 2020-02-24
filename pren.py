@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 
 PROGRAM_RE = re.compile(r'Задание\s(\w+)\sраскрой\s\d+\.iso')
 
+
 def rename_file(path, dry_run=False):
     abs_path = os.path.abspath(path)
     dir_name = os.path.dirname(abs_path)
